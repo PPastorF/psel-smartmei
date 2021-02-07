@@ -1,0 +1,4 @@
+serverConfig:
+  httpPort: 8080
+api:
+  apiVersion: "/api/v1"

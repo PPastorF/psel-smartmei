@@ -1,7 +1,8 @@
 ## TODO
 
 - testes
-    - unitario - golang "testing"
+    - unitário: golang "testing"
+    - integração: com banco
 - api: rest
 - banco: rds
 - dockerfile
