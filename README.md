@@ -4,7 +4,7 @@
     - unitário: golang "testing"
     - integração: com banco
 - api: rest
-- banco: rds
+- banco: rds ok
 - dockerfile
 - ci/cd
 - documentação

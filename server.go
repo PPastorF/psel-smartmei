@@ -1,56 +1,44 @@
 package main
 
 import (
-	"os"
-	"fmt"
-    "strings"
-	"context"
 	"github.com/labstack/echo/v4"
 	"github.com/rs/zerolog/log"
-    "github.com/go-pg/pg/v10"
-    "github.com/go-pg/pg/v10/orm"
 	misc "github.com/ppastorf/psel-smartmei/internal/misc"
-	types "github.com/ppastorf/psel-smartmei/internal/types"
 	user "github.com/ppastorf/psel-smartmei/internal/user"
 	book "github.com/ppastorf/psel-smartmei/internal/book"
+	storage "github.com/ppastorf/psel-smartmei/internal/storage"
 )
 
 func main() {
 	config := &misc.Config{}
 	if err := config.ReadFromFile("config/config.yaml"); err != nil {
-		log.Fatal().Err(err).Msg("Erro ao ler o arquivo de configurações.")
+		log.Fatal().Err(err).Msg("Erro ao ler o arquivo de configuracoes")
 		panic(err)
     }
 
-	if inProd() {
+	if misc.InProductionEnv() {
 		log.Logger = misc.ProdLogger()
 	} else {
 		log.Logger = misc.DevLogger()
 	}
 
-	db := pg.Connect(&pg.Options{
-		Addr: serverAddress(config.Db.Endpoint, config.Db.Port),
-		User: config.Db.Auth.User,
-		Password: config.Db.Auth.Pass,
-		Database: config.Db.DbName,
-		ApplicationName: "psel-smartmei-api",
-    })
+	db := storage.DatabaseConnection(config)
     defer db.Close()
 
-	ctx := context.Background()
-	
-	if err := db.Ping(ctx); err != nil {
-		panic(err)
-	}
-
-    err := createSchema(db)
+    err := storage.CreateSchema(db)
     if err != nil {
-		log.Fatal().Err(err).Msgf("Não foi possivel se conectar ao banco.")
+		log.Fatal().Err(err).Msgf("Não foi possivel se conectar ao banco")
 		panic(err)
     }
 
 	e := echo.New()
-	v1 := e.Group(apiRoutePrefix(config.Api.ApiVersion))
+	v1 := e.Group(misc.ApiRoutePrefix(config.Api.ApiVersion))
+	e.Use(func(next echo.HandlerFunc) echo.HandlerFunc {
+		return func(c echo.Context) error {
+			cc := &misc.CustomContext{c, db, config}
+			return next(cc)
+		}
+	})
 
 	// Rotas
 	v1.GET("/user/:id", user.GetUser)
@@ -60,39 +48,5 @@ func main() {
 	v1.PUT("/book/return", book.ReturnBook)
 
 	// Servidor
-	e.Logger.Fatal(e.Start(serverAddress(config.Server.Address, config.Server.HttpPort)))
-}
-
-func inProd() bool {
-    if strings.ToUpper(os.Getenv("DEPLOY_ENV")) == "PROD" {
-        return true
-    } else {
-        return false
-    }
-}
-
-func apiRoutePrefix(version string) string {
-	return fmt.Sprintf("/api/%s", version)
-}
-
-func serverAddress(addr, port string) string {
-	return fmt.Sprintf("%s:%s", addr, port)
-}
-
-func createSchema(db *pg.DB) error {
-    models := []interface{}{
-        (*types.User)(nil),
-        (*types.Book)(nil),
-        (*types.BookLending)(nil),
-    }
-
-    for _, model := range models {
-        err := db.Model(model).CreateTable(&orm.CreateTableOptions{
-            Temp: true,
-        })
-        if err != nil {
-            return err
-        }
-    }
-    return nil
+	e.Logger.Fatal(e.Start(misc.ConnectionURL(config.Server.Address, config.Server.HttpPort)))
 }

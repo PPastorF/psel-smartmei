@@ -1,4 +1,4 @@
-package user
+package book
 
 import (
 	"github.com/labstack/echo/v4"
