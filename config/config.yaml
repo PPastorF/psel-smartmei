@@ -1,4 +1,12 @@
-serverConfig:
-  httpPort: 8080
+server:
+  address: localhost
+  httpPort: "8080"
 api:
-  apiVersion: "/api/v1"
+  apiVersion: v1
+db:
+  db_name: psel_smartmei_db
+  endpoint: psel-smartmei-postgres.cuhlox9uo1y5.us-east-2.rds.amazonaws.com
+  port: "5432"
+  auth:
+    user: postgres
+    pass:
