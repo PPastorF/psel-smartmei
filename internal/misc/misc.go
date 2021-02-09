@@ -1,11 +1,8 @@
 package misc
 
 import (
-	"os"
-	"fmt"
 	"time"
 	"strings"
-
 	"github.com/google/uuid"
 )
 
@@ -22,24 +19,8 @@ func TimestampStr(t *time.Time) (string, error) {
 	return string(ts), nil
 }
 
-func InProductionEnv() bool {
-    if strings.ToUpper(os.Getenv("DEPLOY_ENV")) == "PROD" {
-        return true
-    } else {
-        return false
-    }
-}
-
-func ApiRoutePrefix(version string) string {
-	return fmt.Sprintf("/api/%s", version)
-}
-
-func ConnectionURL(addr, port string) string {
-	return fmt.Sprintf("%s:%s", addr, port)
-}
-
-func SanitizeString(raw string) string {
+func SanitizeString(raw string) (string, error) {
 	s := strings.TrimSpace(raw)	
 	
-	return s
+	return s, nil
 }

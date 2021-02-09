@@ -2,7 +2,8 @@ server:
   address: localhost
   httpPort: "8080"
 api:
-  apiVersion: v1
+  version: v1
+  routePrefix: /api
 db:
   db_name: psel_smartmei_db
   endpoint: psel-smartmei-postgres.cuhlox9uo1y5.us-east-2.rds.amazonaws.com

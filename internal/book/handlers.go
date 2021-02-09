@@ -1,7 +1,12 @@
 package book
 
 import (
+	// "net/http"
+	// "github.com/rs/zerolog/log"
 	"github.com/labstack/echo/v4"
+	// "github.com/go-pg/pg/v10"
+
+	// misc "github.com/ppastorf/psel-smartmei/internal/misc"
 )
 
 // Req:
@@ -13,7 +18,7 @@ import (
 
 // Res:
 // { ...Book }
-func CreateBook(c echo.Context) error {
+func AddBook(c echo.Context) error {
 	return nil
 }
 

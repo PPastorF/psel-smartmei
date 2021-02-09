@@ -6,21 +6,21 @@ import (
 
 	user "github.com/ppastorf/psel-smartmei/internal/user"
 	book "github.com/ppastorf/psel-smartmei/internal/book"
-	misc "github.com/ppastorf/psel-smartmei/internal/misc"
+	conf "github.com/ppastorf/psel-smartmei/internal/conf"
 )
 
-func DatabaseConnection(config *misc.Config) *pg.DB {
+func NewDBConnection(dbConf conf.DBConfig) *pg.DB {
 	db := pg.Connect(&pg.Options{
-		Addr: misc.ConnectionURL(config.Db.Endpoint, config.Db.Port),
-		User: config.Db.Auth.User,
-		Password: config.Db.Auth.Pass,
-		Database: config.Db.DbName,
+		Addr: dbConf.DBConnectionURL(),
+		User: dbConf.Auth.User,
+		Password: dbConf.Auth.Pass,
+		Database: dbConf.Name,
 		ApplicationName: "psel-smartmei-api",
     })
 	return db
 }
 
-func CreateSchema(db *pg.DB) error {
+func CreateDBSchema(db *pg.DB) error {
     models := []interface{}{
         (*user.User)(nil),
         (*book.Book)(nil),

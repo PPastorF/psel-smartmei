@@ -1,12 +1,13 @@
 ## TODO
 
-- testes
-    - unitário: golang "testing"
-    - integração: com banco
-- api: rest
-- banco: rds ok
+- handlers do módulo book
+- confirmar se exemplos tem parametros flexíveis
+- funcao de sanitizacao de string
 - dockerfile
 - ci/cd
+- testes
+    - unitário: golang "testing"
+    - teste das rotas
 - documentação
     - intro
     - execução

@@ -3,6 +3,8 @@ module github.com/ppastorf/psel-smartmei
 go 1.15
 
 require (
+	github.com/go-ozzo/ozzo-validation v3.6.0+incompatible
+	github.com/go-ozzo/ozzo-validation/v4 v4.3.0
 	github.com/go-pg/pg/v10 v10.7.5
 	github.com/go-playground/validator/v10 v10.4.1
 	github.com/google/uuid v1.2.0
